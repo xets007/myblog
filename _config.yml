@@ -7,7 +7,8 @@ title: 星夜前往
 subtitle:
 description:
 author: Consen 
-language:
+avatar: /images/avatar.png
+language: zh-Hans
 timezone:
 
 # URL
@@ -63,7 +64,8 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+#theme: landscape
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -71,3 +73,6 @@ deploy:
   type: git
   repo: https://github.com/consen/consen.github.io
   branch: master
+
+# duoshuo
+duoshuo_shortname: consen
