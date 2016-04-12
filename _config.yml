@@ -63,6 +63,11 @@ pagination_dir: page
 
 # Extensions
 ## Plugins: https://hexo.io/plugins/
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+
 ## Themes: https://hexo.io/themes/
 #theme: landscape
 theme: next
@@ -74,5 +79,6 @@ deploy:
   repo: https://github.com/consen/consen.github.io
   branch: master
 
-# duoshuo
+# Third Party Services 
+## duoshuo: http://duoshuo.com/
 duoshuo_shortname: consen
