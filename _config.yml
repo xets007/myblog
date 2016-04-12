@@ -82,3 +82,5 @@ deploy:
 # Third Party Services 
 ## duoshuo: http://duoshuo.com/
 duoshuo_shortname: consen
+## jiathis: http://www.jiathis.com/
+jiathis: true
