@@ -96,7 +96,7 @@
         <div class="links-of-blogroll motion-element">
           {% if theme.links %}
             <div class="links-of-blogroll-title">
-              <i class="fa fa-{{ theme.links_icon || 'globe' }}"></i>
+              <i class="fa fa-{{ theme.links_icon || 'globe' }} fa-fw"></i>
               {{ theme.links_title }}
             </div>
             <ul class="links-of-blogroll-list">
