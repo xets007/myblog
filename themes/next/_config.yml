@@ -27,8 +27,8 @@ since: 2015
 menu:
   home: /
   archives: /archives
-  categories: /categories
-  tags: /tags
+  #categories: /categories
+  #tags: /tags
   about: /about
   #commonweal: /404.html
 
@@ -113,6 +113,11 @@ font:
 # Sidebar Settings
 # ---------------------------------------------------------------
 
+# sidebar menu, same as menu, just separate from menu for display.
+sidebar_menu:
+  archives: /archives
+  categories: /categories
+  tags: /tags
 
 # Social Links
 # Key is the link label showing to end users.

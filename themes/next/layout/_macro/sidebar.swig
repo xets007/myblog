@@ -33,27 +33,27 @@
         </div>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
-            <a href="{{ url_for(theme.menu.archives) }}">
+            {% if theme.sidebar_menu.archives %}<a href="{{ url_for(theme.sidebar_menu.archives) }}">{% endif %}
               <span class="site-state-item-count">{{ site.posts.length }}</span>
               <span class="site-state-item-name">{{ __('state.posts') }}</span>
-            </a>
+            {% if theme.sidebar_menu.archives %}</a>{% endif %}
           </div>
 
           {% if site.categories.length > 0 %}
             <div class="site-state-item site-state-categories">
-              {% if theme.menu.categories %}<a href="{{ url_for(theme.menu.categories) }}">{% endif %}
+              {% if theme.sidebar_menu.categories %}<a href="{{ url_for(theme.sidebar_menu.categories) }}">{% endif %}
                 <span class="site-state-item-count">{{ site.categories.length }}</span>
                 <span class="site-state-item-name">{{ __('state.categories') }}</span>
-              {% if theme.menu.categories %}</a>{% endif %}
+              {% if theme.sidebar_menu.categories %}</a>{% endif %}
             </div>
           {% endif %}
 
           {% if site.tags.length > 0 %}
             <div class="site-state-item site-state-tags">
-              {% if theme.menu.tags %}<a href="{{ url_for(theme.menu.tags) }}">{% endif %}
+              {% if theme.sidebar_menu.tags %}<a href="{{ url_for(theme.sidebar_menu.tags) }}">{% endif %}
                 <span class="site-state-item-count">{{ site.tags.length }}</span>
                 <span class="site-state-item-name">{{ __('state.tags') }}</span>
-              {% if theme.menu.tags %}</a>{% endif %}
+              {% if theme.sidebar_menu.tags %}</a>{% endif %}
             </div>
           {% endif %}
 
