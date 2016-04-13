@@ -144,6 +144,7 @@ social_icons:
 
 # Friendly Links
 links_title: 友链
+links_icon: heartbeat
 links:
   Mayliar: http://mayliar.github.io
 
