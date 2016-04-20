@@ -1,42 +1,39 @@
 ---
 title: Hello World
 categories:
-- Toolbox
+- Developer
 tags:
 - Hexo
 ---
-Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [documentation](https://hexo.io/docs/) for more info. If you get any problems when using Hexo, you can find the answer in [troubleshooting](https://hexo.io/docs/troubleshooting.html) or you can ask me on [GitHub](https://github.com/hexojs/hexo/issues).
 
-## Quick Start
+终于要开博写文章了。
 
-### Create a new post
+从大学开始就有建立个人博客的想法，但囿于个人技能经验，写出的文章大都肤浅粗鄙，羞于拿出来分享，生怕贻笑大方，甚至误人子弟。
 
-``` bash
-$ hexo new "My New Post"
-```
+但对博客一直保持关注，从第三方博客系统，到独立建站服务，从WordPress到GitHub Pages, 从Jeklly到Hexo，现在终于找到一套让自己满意的博客系统：用Markdown写文章，Hexo生成静态网站，托管在GitHub，灵活优雅，定制性强，预计几年内不会出现可替代性产品服务。
 
-More info: [Writing](https://hexo.io/docs/writing.html)
+之前个人知识管理用的是笔记，一些想法思考也会写在笔记上，现在个人技能经验增长到一定程度，对问题有了自己独立的认识思考，是时候写出来和大家一同分享了。
 
-### Run server
+本博客会偏IT技术，工作经验，也会写一些自己的生活感悟。
 
-``` bash
-$ hexo server
-```
+之所以越来越认识到写博客的重要性，是因为脑子里想明白是一回事，清晰地说出来是一回事，写出来并且别人愿意从头看到尾又是一回事。在IT圈，别人不了解你，不知道你懂，会很吃亏。建立个人技术品牌，会对个人职业生涯有莫大帮助。
 
-More info: [Server](https://hexo.io/docs/server.html)
+另外，写博客还有很多益处：
 
-### Generate static files
+1. 写的过程中，会激发更多的灵感，完善之前的想法，甚至有新的想法蹦出来。
+2. 锻炼逻辑思维能力，有自己的独到见解，沉淀经验
+3. 提升写作技能，交流技能
+4. 传播分享知识，帮助他人，结识朋友
+5. 系统地学习新事物
+6. 保持对领域趋势发展的持续关注，成为某个领域的专家
+...
 
-``` bash
-$ hexo generate
-```
+看过很多优秀的博客，比如[酷壳](http://coolshell.cn/),  [阮一峰的博客](http://www.ruanyifeng.com/blog/), 能够感受到博主强悍的逻辑思维能力，能把一个复杂的知识点简单清晰地阐释出来，直击问题本质。
 
-More info: [Generating](https://hexo.io/docs/generating.html)
+写博客是一种挑战，坐下来安安静静写是挑战，把自己的思考清晰条理地表达出来是挑战，持之以恒写博客更是一种挑战，但挑战也会促使自己成长，发现自己，成为更好的自己。
 
-### Deploy to remote sites
+让写博客成为一种习惯。
 
-``` bash
-$ hexo deploy
-```
+“黑夜给了我黑色的眼睛，而我却用它寻找光明”，不得不说，程序猿更偏爱黑夜，做事更专注，经过白天的思考沉淀，晚上想法会更多一些，灵感更旺盛。满天星斗，披星戴月，星夜前往，去做想做的事，去见想见的人。
 
-More info: [Deployment](https://hexo.io/docs/deployment.html)
+本博客托管在GitHub，基于Hexo搭建，主题采用Next, 对这些优秀的开源项目表示感谢！
