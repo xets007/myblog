@@ -4,6 +4,7 @@ categories:
 - Developer
 tags:
 - Hexo
+- GitHub
 ---
 
 终于要开博写文章了。
@@ -36,4 +37,4 @@ tags:
 
 “黑夜给了我黑色的眼睛，而我却用它寻找光明”，不得不说，程序猿更偏爱黑夜，做事更专注，经过白天的思考沉淀，晚上想法会更多一些，灵感更旺盛。满天星斗，披星戴月，星夜前往，去做想做的事，去见想见的人。
 
-本博客托管在GitHub，基于Hexo搭建，主题采用Next, 对这些优秀的开源项目表示感谢！
+本博客托管在[GitHub](https://github.com/consen/myblog)，基于[Hexo](https://github.com/hexojs/hexo)搭建，主题采用[NexT](https://github.com/iissnan/hexo-theme-next), 对这些优秀的开源项目表示感谢！
