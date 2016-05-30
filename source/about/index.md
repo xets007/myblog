@@ -9,3 +9,4 @@ date: 2016-05-29 22:08:14
 
 Github: https://github.com/consen
 Weibo: http://weibo.com/xikangjie
+Toutiao: http://toutiao.io/subjects/68903
