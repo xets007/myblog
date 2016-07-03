@@ -33,9 +33,9 @@ HHKB全称Happy Hacking Keyboard，产自日本，由和田英一和PFU研究所
 
 跟普通键盘布局最大的不同就是Control键了，直接放在A键左边，刚开始使用会特别不适应，用一会就能体会其妙处及用意了，经常在Linux下做开发，Control键放在这个位置再合适不过了，Bash、Vim、Emacs、Tmux，这些用Control键来组合快捷键的工具，用起来更舒适了。
 
-HHBK键盘上一些按键做了特定角度的倾斜，按起来相当舒适，比如最上面一排键，按下弹起的触感真是太秒了。
+HHBK键盘上一些按键做了特定角度的倾斜，按起来相当舒适，比如最上面一排键，按下弹起的触感真是太妙了。
 
-KKHB还提供了6个DIP开关，通过这些开关的组合，可以交换键盘上一些键的位置，或者是改变某些键的功能，让HHKB在Windows/Linux/Mac OS下工作。我的办公机是Windows，远程连接到Linux服务器进行开发，所以开启了开关SW2和SW3，这样按Meta键◇会弹出Windows开始菜单，按Delete键是Backspace，做文本删除操作更符合之前的习惯。
+HHKB还提供了6个DIP开关，通过这些开关的组合，可以交换键盘上一些键的位置，或者是改变某些键的功能，让HHKB在Windows/Linux/Mac OS下工作。我的办公机是Windows，远程连接到Linux服务器进行开发，所以开启了开关SW2和SW3，这样按Meta键◇会弹出Windows开始菜单，按Delete键是Backspace，做文本删除操作更符合之前的习惯。
 
 总之，HHKB是特别适合Linux程序员入手的一款键盘，能让你更好地忘记鼠标，纯键盘操作。用着这样的神器心情也会好很多，工作效率事半功倍。
 
