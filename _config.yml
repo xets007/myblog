@@ -92,6 +92,8 @@ deploy:
 # Third Party Services 
 ## duoshuo: http://duoshuo.com/
 duoshuo_shortname: consen
+## disqus: https://disqus.com/
+#disqus_shortname: consen
 ## jiathis: http://www.jiathis.com/
 jiathis: true
 ## baidu analytics: http://tongji.baidu.com
