@@ -19,7 +19,7 @@ tags:
 
 也许《Flask Web Development》这本书中讲的Flask Web开发，你以后不一定会用到，但书中内容的编排，行文的方式，一定对你写文章、写书大有帮助。
 
-最后，感受下Flask的简洁优美，领悟Flask是怎样建立生态的。下面列出了《Web Flask Development》中使用到的Flask扩展：
+最后，感受下Flask的简洁优美，领悟Flask是怎样建立生态的。下面列出了《Flask Web Development》中使用到的Flask扩展：
 
 ```sh
 $ pip list | grep Flask
