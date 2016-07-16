@@ -95,6 +95,6 @@ deploy:
 ## disqus: https://disqus.com/
 disqus_shortname: consen
 ## jiathis: http://www.jiathis.com/
-jiathis: true
+#jiathis: true
 ## baidu analytics: http://tongji.baidu.com
 baidu_analytics: d4ddbfe3c227faa94e428601f506aed8
