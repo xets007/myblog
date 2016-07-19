@@ -34,7 +34,7 @@ Mathon由于提供了很多非常人性化的功能，深得用户喜欢，赢�
 1. 在Chrome下按住Ctrl并鼠标左键单击链接，链接就自动在后台打开；或者也可以鼠标右键单击链接，选择“在新标签页中打开链接”。
 2. 会话管理，在Chrome下，我使用了OneTab扩展，非常棒。
 ![](http://7xtc3e.com1.z0.glb.clouddn.com/switch-browser-from-mathon-to-chrome/chrome_onetab.png)
-3. 资源嗅探，用了下扩展“Chrono现在管理器”，无感，卸载了，似乎资源嗅探并非必须。
+3. 资源嗅探，用了下扩展“Chrono下载管理器”，无感，卸载了，似乎资源嗅探并非必须。
 4. 繁转简，Chrome下没发现有好用的扩展，自己开发一个？？？:)
 5. 代理，装了个SwitchyOmega扩展，非常好用，甚至胜过Mathon自带的代理。
 ![](http://7xtc3e.com1.z0.glb.clouddn.com/switch-browser-from-mathon-to-chrome/chrome_proxy.png)
