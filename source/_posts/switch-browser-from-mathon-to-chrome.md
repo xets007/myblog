@@ -14,7 +14,7 @@ Mathon由于提供了很多非常人性化的功能，深得用户喜欢，赢�
 
 0. **界面**，简洁的UI，尤其是黑色边框主题，很符合我的口味。
 ![](http://7xtc3e.com1.z0.glb.clouddn.com/switch-browser-from-mathon-to-chrome/mathon_ui.png)
-1. **拖拽打开**，网页上链接，轻轻拖拽一下，自动在后台打开，你可继续在当前标签页浏览。
+1. **拖拽打开**，网页上链接，鼠标左键点住轻轻拖拽一下，自动在后台打开，你可继续在当前标签页浏览。
 2. **会话管理**，如果浏览器不小心被关闭，再次打开时可以恢复上次的会话，继续浏览之前的网页。
 3. **资源嗅探**，自动嗅探当前网页的视频和图片，方便批量下载。
 ![](http://7xtc3e.com1.z0.glb.clouddn.com/switch-browser-from-mathon-to-chrome/mathon_resource_sniffer.png)
