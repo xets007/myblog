@@ -103,14 +103,14 @@ int main()
 }
 ```
 
-物理机下运行结果：
+在物理机下运行结果：
 
 ```
 CPU Hypervisor Bit: 0
 Hypervisor: , is known vm vendor: false
 ```
 
-在VMWare虚拟机下运行结果：
+在VMware虚拟机下运行结果：
 
 ```
 CPU Hypervisor Bit: 1
