@@ -157,9 +157,7 @@ cpu_rdtsc_force_vmexit: 1
 
 - [Wikipedia Time Stamp Counter](https://en.wikipedia.org/wiki/Time_Stamp_Counter)
 - [rdtsc x86 instruction to detect virtual machines](http://blog.badtrace.com/tag/antivm/)
-- [Virtualization Detection: New Strategies and Their
-Effectiveness
-](https://people.eecs.berkeley.edu/~cthompson/papers/virt-detect.pdf)
+- [Virtualization Detection: New Strategies and Their Effectiveness](https://people.eecs.berkeley.edu/~cthompson/papers/virt-detect.pdf)
 - [Xen TSC Mode HOWTO](https://xenbits.xen.org/docs/unstable/misc/tscmode.txt)
 - [Xen Feature Levelling](http://xenbits.xen.org/docs/unstable/features/feature-levelling.html)
 - [GCC-Inline-Assembly-HOWTO](http://www.ibiblio.org/gferg/ldp/GCC-Inline-Assembly-HOWTO.html)
