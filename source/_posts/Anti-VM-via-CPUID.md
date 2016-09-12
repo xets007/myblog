@@ -13,6 +13,8 @@ tags:
 
 <!-- more -->
 
+![redpillbluepill](http://7xtc3e.com1.z0.glb.clouddn.com/MatrixBluePillRedPill2.jpg)
+
 动态检测不管借助哪种虚拟化工具，如VMware、VirtualBox、Xen、KVM等，都会留下蛛丝马迹，表征当前环境是虚拟的。
 
 接下来就借助`CPUID`指令，检测当前环境是否是虚拟的。
@@ -31,7 +33,7 @@ tags:
 "VBoxVBoxVBox"       VirtualBox
 ```
 
-检测代码：
+检测代码 [cpuid.c](https://github.com/consen/demo/blob/master/c/syntax/asm/cpuid2.c) ：
 
 ``` c
 #include <stdio.h>
