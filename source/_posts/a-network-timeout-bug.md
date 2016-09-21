@@ -52,7 +52,7 @@ tcp        0      0 172.16.1.1:44107            172.16.1.123:8000           ESTA
 tcp        0      0 172.16.1.1:53634            172.16.1.116:8000           CLOSE_WAIT  336/tcpdump 
 ```
 
-像CLOSE_WAIT, TIME_WAIT这种状态，大量出现一般是有问题的。另外，还有**一个更有意思的现象**，这些网络连接为什么显示是`tcpdump`进程建立的？Why？`tcpdump`就一个抓包进程，怎么会去访问XMLRPC服务。哦？哦！`tcpdump`进程是以子进程形式启动的，继承了父进程建立的网络连接，所以才会有上面的显示。
+像CLOSE_WAIT, TIME_WAIT这种状态，大量出现一般是有问题的。另外，还有**一个更有意思的现象**，这些网络连接为什么显示是`tcpdump`进程建立的？Why？`tcpdump`就一个抓包进程，怎么会去访问XMLRPC服务。哦？哦！**`tcpdump`进程是以子进程形式启动的，继承了父进程建立的网络连接，所以才会有上面的显示**。
 
 直觉问题就出在`tcpdump`。
 
@@ -80,3 +80,70 @@ tcp        0      0 172.16.1.1:44727            172.16.1.121:8000           ESTA
 1. ESTABLISHED，CLOSE_WAIT状态是怎么出现的？
 2. tcpdump进程继承的连接为什么会导致这些状态出现？
 3. 这些状态出现时，agent.py为什么会卡住没响应？
+
+---
+
+(2016.09.21 10:34更新)
+
+先回答问题3， Python的SimpleXMLRPCServer是单线程的，串行执行请求，也就是说每次只能处理一个请求，当有请求正在处理，新的请求会阻塞住，就会出现agent.py卡住没响应的现象。
+
+写个简单的demo测试下：
+
+[function_server.py](https://github.com/consen/demo/blob/master/python/library/SimpleXMLRPCServer/function_server.py)，提供一个简单的XMLRPC服务。
+
+```
+from SimpleXMLRPCServer import SimpleXMLRPCServer
+import logging
+import os
+import time
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
+
+server = SimpleXMLRPCServer(('localhost', 9090), logRequests=True)
+
+# Expose a function
+def list_contents(dir_name):
+    logging.debug('list_contents(%s)', dir_name)
+    time.sleep(20)
+    return os.listdir(dir_name)
+
+def list_contents2(dir_name):
+    logging.debug('list_contents(%s)', dir_name)
+    return os.listdir(dir_name)
+
+server.register_function(list_contents)
+server.register_function(list_contents2)
+
+try:
+    print 'Use Control-C to exit'
+    server.serve_forever()
+except KeyboardInterrupt:
+    print 'Exiting'
+```
+
+[function_client.py](https://github.com/consen/demo/blob/master/python/library/SimpleXMLRPCServer/function_client.py)
+
+```
+import xmlrpclib
+
+proxy = xmlrpclib.ServerProxy('http://localhost:9090')
+print proxy.list_contents('./')
+```
+
+[function_client2.py](https://github.com/consen/demo/blob/master/python/library/SimpleXMLRPCServer/function_client2.py)
+
+```
+import xmlrpclib
+
+proxy = xmlrpclib.ServerProxy('http://localhost:9090')
+print proxy.list_contents2('./')
+```
+
+先启动function_client.py，由于list_contents()会sleep 20s，模拟XMLRPC服务正在长时间处理当前请求。
+
+再启动fuction_client2.py，由于XMLRPC服务正在处理function_client.py的list_contents()请求，list_contents2()请求会被阻塞住，没响应。
+
+![xmlprc demo](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/xmlrpc_demo.png)
+
+这就解释了虚拟机内agent.py提供的XMLRPC服务，为什么会出现无响应的现象，因为有连接建立，有正在处理的请求，**见上面虚拟机内netstat截图中ESTABLISHED状态的连接**。
