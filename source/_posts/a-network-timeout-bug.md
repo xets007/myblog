@@ -52,7 +52,7 @@ tcp        0      0 172.16.1.1:44107            172.16.1.123:8000           ESTA
 tcp        0      0 172.16.1.1:53634            172.16.1.116:8000           CLOSE_WAIT  336/tcpdump 
 ```
 
-像CLOSE_WAIT, TIME_WAIT这种状态，大量出现一般是有问题的。另外，还有**一个更有意思的现象**，这些网络连接为什么显示是`tcpdump`进程建立的？Why？`tcpdump`就一个抓包进程，怎么会去访问XMLRPC服务。哦？哦！**`tcpdump`进程是以子进程形式启动的，继承了父进程建立的网络连接，所以才会有上面的显示**。
+像CLOSE_WAIT, TIME_WAIT这种状态，大量出现一般是有问题的。另外，还有**一个更有意思的现象**，这些网络连接为什么显示是`tcpdump`进程建立的？Why？`tcpdump`就一个抓包进程，怎么会去访问XMLRPC服务。哦？哦！**`tcpdump`进程是以子进程形式启动的，继承了父进程建立的网络连接，所以才会有上面的显示。**
 
 直觉问题就出在`tcpdump`。
 
@@ -62,13 +62,13 @@ tcp        0      0 172.16.1.1:53634            172.16.1.116:8000           CLOS
 
 接着排查。
 
-当tcpdump进程继承了ESTABLISHED状态的连接时，当相同IP的虚拟机再次启动时，里面的agent.py就会卡住，对外面的请求没有响应。如:
+观察发现当tcpdump进程继承的网络连接状态显示为ESTABLISHED时，虚拟机内的agent.py就会卡住，对外面的请求没有响应。如:
 
 ```
 tcp        0      0 172.16.1.1:44727            172.16.1.121:8000           ESTABLISHED 32445/tcpdump  
 ```
 
-172.16.1.121这台虚拟机再次启动时就会出现问题，agent.py卡住，长时间没响应，于是外面访问时出现超时问题。在虚拟机内部观察netstat状态：
+172.16.1.121这台虚拟机就会出现问题，agent.py卡住，长时间没响应，于是外面访问时出现超时问题。在虚拟机内部观察netstat状态：
 
 ![netstat](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/agent_netstat.png)
 
@@ -147,3 +147,206 @@ print proxy.list_contents2('./')
 ![xmlprc demo](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/xmlrpc_demo.png)
 
 这就解释了虚拟机内agent.py提供的XMLRPC服务，为什么会出现无响应的现象，因为有连接建立，有正在处理的请求，**见上面虚拟机内netstat截图中ESTABLISHED状态的连接**。
+
+---
+
+（2016.09.22 21:32更新）
+
+接着回答问题1和2。
+
+ESTABLISHED，CLOSE_WAIT状态是怎么出现的？先看下TCP协议状态转换图：
+
+![tcpflow](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/socket_tcpflow.png)
+
+TCP连接建立后客户端和服务端进入ESTABLISHED状态，主动关闭连接的一方会进入TIME_WAIT状态，被动关闭连接的一方会进入CLOSE_WAIT状态。
+
+那么虚拟机内ESTABLISHED，CLOSE_WAIT状态到底是怎么出现的？我又将Bug复现了1遍，仔细观察netstat输出，终于发现了猫腻。下面只抽取了172.16.1.102虚拟机Bug出现时的网络连接状态。
+
+```
+# netstat -anp | grep :8000
+tcp        0      1 172.16.1.1:41240            172.16.1.102:8000           SYN_SENT    3571/python    
+```
+
+```
+# netstat -anp | grep :8000
+tcp        0      0 172.16.1.1:41262            172.16.1.102:8000           FIN_WAIT2   -            
+tcp        0      0 172.16.1.1:41265            172.16.1.102:8000           ESTABLISHED 3571/python 
+tcp        0      0 172.16.1.1:41240            172.16.1.102:8000           ESTABLISHED 8805/tcpdump 
+```
+
+**注意看这个连接(172.16.1.1:41240 172.16.1.102:8000)，父进程请求完毕后，此连接并没有关闭，因为还被子进程占用着，所以在子进程中仍显示为ESTABLISHED状态。**
+
+写个简单的demo把Bug复现下，更清楚地解释Bug出现的原因。
+
+[echo_server_tcp.py](https://github.com/consen/demo/blob/master/python/library/socket/echo_server_tcp.py)，接收请求并把请求数据又返回给客户端。
+
+```python
+import socket
+import sys
+
+# Create a TCP/IP socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# Bind the socket to the port
+server_address = ('localhost', 10000)
+print >>sys.stderr, 'starting up on %s port %s' % server_address
+sock.bind(server_address)
+# Calling listen() puts the socket into server mode, and accept() waits for an
+# incoming connection.
+# Listen for incoming connections
+sock.listen(1)
+
+while True:
+    # Wait for a connection
+    print >>sys.stderr, 'waiting for a connection'
+    connection, client_address = sock.accept()
+    try:
+        print >>sys.stderr, 'connection from', client_address
+        # Receive the data in small chunks and retransmit it
+        while True:
+            data = connection.recv(16)
+            print >>sys.stderr, 'received "%s"' % data
+            if data:
+                print >>sys.stderr, 'sending data back to the client'
+                connection.sendall(data)
+            else:
+                print >>sys.stderr, 'no more data from', client_address
+                break
+    finally:
+        # Clean up the connection
+        connection.close()
+```
+
+[echo_client_tcp_child.py](https://github.com/consen/demo/blob/master/python/library/socket/echo_client_tcp_child.py)，发送请求，并启动了一个子进程cat，子进程会继承父进程的sock。sleep 20s方便观察netstat状态。
+
+```python
+import socket
+import sys
+import time
+import subprocess
+
+# Create a TCP/IP socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+cmd = ["cat"]
+proc = subprocess.Popen(cmd)
+print proc.pid
+
+# For netstat and lsof
+time.sleep(20)
+
+# Connect the socket to the port where the server is listening
+server_address = ('localhost', 10000)
+print >>sys.stdout, 'connecting to %s port %s' % server_address
+sock.connect(server_address)
+
+try:
+    # Send data
+    message = 'This is the message. It will be repeated.'
+    print >>sys.stderr, 'sending "%s"' % message
+    sock.sendall(message)
+
+    # Look for the response
+    amount_received = 0
+    amount_expected = len(message)
+
+    while amount_received < amount_expected:
+        data = sock.recv(16)
+        amount_received += len(data)
+        print >>sys.stderr, 'received "%s"' % data
+finally:
+    print >>sys.stderr, 'closing socket'
+    time.sleep(20)  # For netstat
+    sock.close()
+```
+
+[echo_client_tcp.py](https://github.com/consen/demo/blob/master/python/library/socket/echo_client_tcp.py)，这个和echo_client_tcp_child.py是一样的，只不过取消掉了启动子进程和sleep 20s，立即发送请求。
+
+```python
+import socket
+import sys
+
+# Create a TCP/IP socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Connect the socket to the port where the server is listening
+server_address = ('localhost', 10000)
+print >>sys.stdout, 'connecting to %s port %s' % server_address
+sock.connect(server_address)
+
+try:
+    # Send data
+    message = 'This is the message. It will be repeated.'
+    print >>sys.stderr, 'sending "%s"' % message
+    sock.sendall(message)
+
+    # Look for the response
+    amount_received = 0
+    amount_expected = len(message)
+
+    while amount_received < amount_expected:
+        data = sock.recv(16)
+        amount_received += len(data)
+        print >>sys.stderr, 'received "%s"' % data
+finally:
+    print >>sys.stderr, 'closing socket'
+    sock.close()
+```
+
+- 启动服务：
+
+![server](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/server.png)
+
+此时的netstat：
+
+![](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/server_netstat.png)
+
+- 启动echo_client_tcp_child.py：
+
+![](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/client1.png)
+
+此时的netstat:
+
+![](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/server_netstat.png)
+
+观察lsof输出，可以发现子进程已经继承了父进程的sock。
+
+```
+$ lsof -p 16696
+COMMAND   PID      USER   FD   TYPE DEVICE  SIZE/OFF       NODE NAME
+cat     16696 xikangjie    3u  sock    0,7       0t0   13005348 can't identify protocol
+```
+
+- echo_client_tcp_child.py运行结束但还没调用sock.close():
+
+![](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/client1_2.png)
+
+![](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/client1_netstat1.png)
+
+- echo_client_tcp_child.py调用sock.close()，关闭连接(127.0.0.1:46126 127.0.0.1:10000)，可以看到此连接在子进程中仍显示为ESTABLISHED状态:
+
+![](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/client1_netstat2.png)
+
+- 启动echo_client_tcp.py，可以看到阻塞住，无法发送请求:
+
+![](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/client2.png)
+
+此时的netstat:
+
+![](http://7xtc3e.com1.z0.glb.clouddn.com/a-network-timeout-bug/client2_netstat.png)
+
+- 将cat进程退出后，可立即发送请求。
+
+---
+
+总结：
+
+理解此Bug需要搞明白子进程继承了父进程的文件描述符（网络连接也是文件描述符的一种）会有什么影响。简单讲就是子进程继承了父进程的网络连接，父进程关闭网络连接后，由于此连接也被子进程占用，所以没有真正关闭，导致服务器无法响应新的请求。
+
+1. 解决Bug的第一步是把Bug复现，用最简单的方法把Bug复现，就相当于把Bug解决了一半。
+2. 多积累技术基础，才能透过现象看到本质。
+
+参考：
+
+- [使用TCPDUMP和Wireshark排查服务端CLOSE_WAIT（一）](https://typecodes.com/cseries/tcpdumpwiresharkclosewait1.html)
+- [使用TCPDUMP和Wireshark排查服务端CLOSE_WAIT（二）](https://typecodes.com/cseries/tcpdumpwiresharkclosewait2.html)
+- [ws-xmlrpc-user mailing list archives](http://mail-archives.apache.org/mod_mbox/ws-xmlrpc-user/200411.mbox/%3CFEFA185A-395A-11D9-BBB9-000A95B9441C@wilson.co.uk%3E)
