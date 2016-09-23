@@ -35,7 +35,7 @@ tags:
 
 检测代码 [cpuid.c](https://github.com/consen/demo/blob/master/c/syntax/asm/cpuid2.c) ：
 
-``` c
+```c
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>

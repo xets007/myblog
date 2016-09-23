@@ -23,7 +23,7 @@ RDTSC和CPUID都是非特权（unprivileged）指令，可以在用户态调用�
 
 检测代码 [rdtsc.c](https://github.com/consen/demo/blob/master/c/syntax/asm/rdtsc.c) ：
 
-```
+```c
 #include <stdio.h>
 #include <unistd.h>
 

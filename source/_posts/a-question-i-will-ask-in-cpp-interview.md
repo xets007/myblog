@@ -15,7 +15,7 @@ C++是一门难学易用的语言，如果没有深刻理解一些基本概念�
 
 <!-- more -->
 
-```c++
+```cpp
 #include <iostream>
 using namespace std;
 
