@@ -91,7 +91,7 @@ tcp        0      0 172.16.1.1:44727            172.16.1.121:8000           ESTA
 
 [function_server.py](https://github.com/consen/demo/blob/master/python/library/SimpleXMLRPCServer/function_server.py)，提供一个简单的XMLRPC服务。
 
-```
+```python
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 import logging
 import os
@@ -124,7 +124,7 @@ except KeyboardInterrupt:
 
 [function_client.py](https://github.com/consen/demo/blob/master/python/library/SimpleXMLRPCServer/function_client.py)
 
-```
+```python
 import xmlrpclib
 
 proxy = xmlrpclib.ServerProxy('http://localhost:9090')
@@ -133,7 +133,7 @@ print proxy.list_contents('./')
 
 [function_client2.py](https://github.com/consen/demo/blob/master/python/library/SimpleXMLRPCServer/function_client2.py)
 
-```
+```python
 import xmlrpclib
 
 proxy = xmlrpclib.ServerProxy('http://localhost:9090')
