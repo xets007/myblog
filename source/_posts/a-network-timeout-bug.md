@@ -338,6 +338,12 @@ cat     16696 xikangjie    3u  sock    0,7       0t0   13005348 can't identify p
 
 ---
 
+（2016.09.23 10:24更新）
+
+给Cukoo提交的Pull Request已经merge到master分支：[Fix agent.py timeout error caused by tcpdump process.](https://github.com/cuckoosandbox/cuckoo/pull/1100)
+
+---
+
 总结：
 
 理解此Bug需要搞明白子进程继承了父进程的文件描述符（网络连接也是文件描述符的一种）会有什么影响。简单讲就是子进程继承了父进程的网络连接，父进程关闭网络连接后，由于此连接也被子进程占用，所以没有真正关闭，导致服务器无法响应新的请求。
