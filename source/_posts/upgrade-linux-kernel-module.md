@@ -7,7 +7,7 @@ tags:
 categories: Linux
 ---
 
-目前沙箱虚拟化是基于Xen实现的，沙箱集群大概运行一两个月，会有一台服务器出现Xen卡死的情况，xl命令无法使用，虚拟机无法创建，不得不重启服务器。在开发初期，通过重启来解决这样的问题是可以接受的，毕竟出错的概率不是很高，但如果不从根本上解决此问题，心里就像压了一块石头。这样的产品也不能卖给客户，如果你对客户说：“服务器卡死了没关系，重启下就好”，后果会怎样？
+目前沙箱虚拟化是基于Xen实现的，沙箱集群大概运行一两个月，会有一台服务器出现Xen卡死的情况，xl命令无法使用，虚拟机无法创建，不得不重启服务器。在项目开发初期，通过重启来解决这样的问题是可以接受的，毕竟出错的概率不是很高，但如果不从根本上解决此问题，心里就像压了一块石头。这样的产品也不能卖给客户，如果你对客户说：“服务器卡死了没关系，重启下就好”，后果会怎样？
 
 现在就彻底解决下这个问题。
 
@@ -85,12 +85,103 @@ kernel BUG发生在`drivers/xen/evtchn.c:264`，目前使用的内核版本是ke
 
 代码比较简单，可以看出是port重用了。而最新的内核中，此问题已经被修复掉了，见提交记录[xen/evtchn: improve scalability by using per-user locks](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/drivers/xen/evtchn.c?id=73cc4bb0c79eebe1f0e92b700d9fe8d1c9b061bb)。所以解决此问题可以升级内核，也可以只将内核模块xen_evtchn升级下，我们采用改动比较小的后者。
 
-Linux内核模块是不能跨内核使用的，也就是说在A内核上编译的内核模块无法在B内核上使用，除非采取一些tricks。使用的是kernel-3.10.20，最好就在kernel-3.10.20环境下将新版xen_evtchn重新编译下。需要注意的是，如果新版xen_evtchn使用了新内核提供的一些功能，是无法在kernel-3.10.20上编译的，只能是将内核升级到新版本。所以只需要拿到修复了Xen卡死问题的evtchn.c代码即可，不需要是最新，我们选用提交[xen: remove deprecated IRQF_DISABLED](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/drivers/xen/evtchn.c?id=af09d1a73aed4e83ee095f2dabdc09386e31f2ea)中的[evtchn.c](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/drivers/xen/evtchn.c?id=af09d1a73aed4e83ee095f2dabdc09386e31f2ea)代码，即将Xen卡死问题解决了，又没有使用新版内核功能，可以在kernel-3.10.20上编译。
-
-然后安装当前内核kernel-3.10.20的开发包，即一堆头文件，在CentOS下是kernel-devel-3.10.20 rpm包，安装好后会有目录`/usr/src/kernels/3.10.20`，而且可以发现当前内核版本中/lib/modules/$(uname -r)/build链接也正常显示了：
+Linux内核模块是不能跨内核使用的，也就是说给A内核编译的内核模块无法在B内核上使用，除非采取一些tricks。比如我现在运行的内核版本是kernel-3.10.20，那么给kernel-2.6.32编译的内核模块就无法在kernel-3.10.20上使用，写个简单的demo说明下。
 
 ```
-build -> ../../../usr/src/kernels/3.10.20
+$ uname -r
+3.10.20-11.el6.centos.alt.x86_64
+```
+
+最简单的内核模块，[hello world](https://github.com/consen/demo/blob/master/linux/kernel-module/hello-2.6/hello.c):
+
+```
+#include <linux/module.h>   /* Needed by all modules */
+#include <linux/kernel.h>   /* Needed for KERN_INFO */
+#include <linux/init.h>     /* Needed for the macros */
+
+static int __init hello_init(void)
+{
+    printk(KERN_INFO "Hello, world\n");
+    return 0;
+}
+
+static void __exit hello_exit(void)
+{
+    printk(KERN_INFO "Goodbye, world\n");
+}
+
+module_init(hello_init);
+module_exit(hello_exit);
+```
+
+[Makefile](https://github.com/consen/demo/blob/master/linux/kernel-module/hello-2.6/Makefile)文件，注意指定的版本号是kernel-2.6.32:
+
+```
+obj-m += hello.o
+
+all:
+        make -C /lib/modules/2.6.32-220.el6.x86_64/build M=$(PWD) modules
+
+clean:
+        make -C /lib/modules/2.6.32-220.el6.x86_64/build M=$(PWD) clean
+```
+
+编译，生成hello.ko文件：
+
+```
+$ make
+make -C /lib/modules/2.6.32-220.el6.x86_64/build M=/data1/home/xikangjie/github/demo/linux/kernel-module/hello-2.6 modules
+make[1]: Entering directory `/usr/src/kernels/2.6.32-220.el6.x86_64'
+  CC [M]  /data1/home/xikangjie/github/demo/linux/kernel-module/hello-2.6/hello.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC      /data1/home/xikangjie/github/demo/linux/kernel-module/hello-2.6/hello.mod.o
+  LD [M]  /data1/home/xikangjie/github/demo/linux/kernel-module/hello-2.6/hello.ko.unsigned
+  NO SIGN [M] /data1/home/xikangjie/github/demo/linux/kernel-module/hello-2.6/hello.ko
+make[1]: Leaving directory `/usr/src/kernels/2.6.32-220.el6.x86_64'
+$ ls
+hello.c  hello.ko  hello.ko.unsigned  hello.mod.c  hello.mod.o  hello.o  Makefile  modules.order  Module.symvers
+```
+
+插入内核模块，可以发现会出错，因为与当前内核版本不匹配，这个内核模块只能在kernel-2.6.32-220.el6.x86_64上正常运行:
+
+```
+$ sudo insmod ./hello.ko
+insmod: error inserting './hello.ko': -1 Invalid module format
+```
+
+同时，`/var/log/messages`中对应的日志信息：
+
+```
+kernel: hello: disagrees about version of symbol module_layout
+```
+
+将Makefile中的内核版本改为当前内核版本，`/lib/modules/$(shell uname -r)/build`，重新编译下，hello.ko就可正常加载了，同时`/var/log/messages`也输出了`Hello, world`。
+
+使用的是kernel-3.10.20，最好就在kernel-3.10.20的开发环境下将新版xen_evtchn重新编译下。需要注意的是，如果新版xen_evtchn使用了新内核提供的一些功能，是无法在kernel-3.10.20上编译的，只能使用新版内核开发环境。所以只需要拿到修复了Xen卡死问题的evtchn.c代码即可，不需要是最新，我们选用提交[xen: remove deprecated IRQF_DISABLED](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/drivers/xen/evtchn.c?id=af09d1a73aed4e83ee095f2dabdc09386e31f2ea)中的[evtchn.c](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/drivers/xen/evtchn.c?id=af09d1a73aed4e83ee095f2dabdc09386e31f2ea)代码，既将Xen卡死问题解决了，又没有使用新版内核功能，可以在kernel-3.10.20上编译。
+
+然后安装当前内核kernel-3.10.20的开发环境，即一堆头文件，在CentOS下是kernel-devel-3.10.20-11.el6.centos.alt.x86_64.rpm：
+
+```
+$ yum info kernel-devel-3.10.20-11.el6.centos.alt.x86_64
+Installed Packages
+Name        : kernel-devel
+Arch        : x86_64
+Version     : 3.10.20
+Release     : 11.el6.centos.alt
+Size        : 32 M
+Repo        : installed
+Summary     : Development package for building kernel modules to match the kernel.
+URL         : http://www.kernel.org/
+License     : GPLv2
+Description : This package provides the kernel header files and makefiles
+            : sufficient to build modules against the kernel package.
+```
+
+安装好后会有目录`/usr/src/kernels/3.10.20-11.el6.centos.alt.x86_64/`，而且可以发现当前内核版本中/lib/modules/3.10.20-11.el6.centos.alt.x86_64/build链接也正常显示了：
+
+```
+build -> ../../../usr/src/kernels/3.10.20-11.el6.centos.alt.x86_64
 ```
 
 接着编写Makefile：
@@ -106,7 +197,7 @@ clean:
         make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
 ```
 
-运行`make`命令编译，生成内核模块`xen-evtchn.ko`，拷贝到目录/lib/modules/$(shell uname -r)/kernel/drivers/xen/目录下，将老版`xen-evtchn.ko`覆盖（以防万一，可以将老版`xen-evtchn.ko`先备份下），`reboot`重启系统。
+运行`make`命令编译，生成内核模块`xen-evtchn.ko`，拷贝到/lib/modules/3.10.20-11.el6.centos.alt.x86_64/kernel/drivers/xen/目录下，将老版`xen-evtchn.ko`覆盖（以防万一，可以将老版`xen-evtchn.ko`先备份下），`reboot`重启系统。
 
 
 ---
