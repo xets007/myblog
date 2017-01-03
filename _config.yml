@@ -89,6 +89,7 @@ deploy:
   repo: https://github.com/consen/consen.github.io
   branch: master
 
+
 # Third Party Services 
 ## duoshuo: http://duoshuo.com/
 #duoshuo_shortname: consen
@@ -101,3 +102,11 @@ disqus_shortname: consen
 
 ## baidu analytics: http://tongji.baidu.com
 #baidu_analytics: d4ddbfe3c227faa94e428601f506aed8
+
+## algolia: https://www.algolia.com/
+algolia:
+  applicationID: 9KGRDNMCOD
+  apiKey: 05b35fa0784c0870ed641d7477ec8668
+  adminApiKey: 
+  indexName: myblog
+  chunkSize: 5000
