@@ -244,12 +244,33 @@ $ vim filename +10
    -c <command>         Execute <command> after loading the first file
 ```
 
-### 16. vim plugin manager
+### 16. jump
+
+In normal mode, `%` jumps to corresponding item, e.g. from an open brace to its matching closing brace.
+
+Like a web browser, you can go back, then forward:
+
+- Press Ctrl-O to jump back to the previous (older) location.
+- Press Ctrl-I (same as Tab) to jump forward to the next (newer) location.
+
+Display the jump list for the current window with:
+
+```
+:jumps
+```
+
+### 17. format json
+
+```
+:%!python -m json.tool
+```
+
+### 18. vim plugin manager
 
 - [What is the difference between the vim package managers?](http://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-package-managers)
 - [Why I switched from Vundle to Plug](https://jordaneldredge.com/blog/why-i-switched-from-vundle-to-plug/)
 
-### 17. useful resources
+### 19. useful resources
 
 - [Vim Tips Wiki](http://vim.wikia.com/wiki/Vim_Tips_Wiki)
 - [Vim Awesome](http://vimawesome.com/)
