@@ -116,4 +116,6 @@ struct rb_node {
 
 - [Hide data inside pointers](http://arjunsreedharan.org/post/105266490272/hide-data-inside-pointers)
 - [Data Alignment](http://www.songho.ca/misc/alignment/dataalign.html)
-- [Word (computer architecture)](https://en.wikipedia.org/wiki/Word_(computer_architecture))
+- [Word (computer architecture)][1]
+
+[1]: https://en.wikipedia.org/wiki/Word_(computer_architecture)
