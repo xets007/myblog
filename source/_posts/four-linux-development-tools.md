@@ -47,7 +47,7 @@ Vim的各种使用技巧需要慢慢积累，如我之前的博客[《Vim Tips�
 
 [Tmux](http://tmux.github.io/)（terminal multiplexer）很好地解决了上面的问题，只要建立一个远程连接，就可以开启多个终端，同时进行操作，一个查看文档，一个写代码，一个编译，一个运行程序。
 
-我的Tmux配置，[dotfiles/tmux/tmux.conf](https://github.com/consen/dotfiles/blob/master/tmux/tmux.conf)，Tmux默认命令前置操作为'Ctrl+B'，我改成了'Ctrl+A'。
+我的Tmux配置，[dotfiles/tmux/tmux.conf](https://github.com/consen/dotfiles/blob/master/tmux/tmux.conf)，Tmux命令前置操作默认为Ctrl+B，我改成了Ctrl+A。
 
 ![tmux](http://7xtc3e.com1.z0.glb.clouddn.com/four-linux-development-tools/tmux.png)
 
