@@ -41,13 +41,13 @@ Vim的各种使用技巧需要慢慢积累，如我之前的博客[《Vim Tips�
 
 如果你是远程连接到Linux服务器进行开发，一定遇到过下面几个问题：
 
-1. 有时可能会同时进行多项操作，不得不建立多个远程连接。
+1. 有时可能会同时进行多项操作，不得不打开多个窗口建立多个远程连接。
 2. 如果网络出现抖动，连接突然中断，又得重新建立连接，重新恢复之前的操作。
 3. 想在一个屏幕上不切换窗口，看到所有窗口的输出。
 
 [Tmux](http://tmux.github.io/)（terminal multiplexer）很好地解决了上面的问题，只要建立一个远程连接，就可以开启多个终端，同时进行操作，一个查看文档，一个写代码，一个编译，一个运行程序。
 
-我的Tmux配置，[dotfiles/tmux/tmux.conf](https://github.com/consen/dotfiles/blob/master/tmux/tmux.conf)，Tmux命令前置操作默认为Ctrl+B，我改成了Ctrl+A。
+我的Tmux配置，[dotfiles/tmux/tmux.conf](https://github.com/consen/dotfiles/blob/master/tmux/tmux.conf)，Tmux命令前置操作默认为Ctrl+b，我改成了Ctrl+a。
 
 ![tmux](http://7xtc3e.com1.z0.glb.clouddn.com/four-linux-development-tools/tmux.png)
 
@@ -65,17 +65,17 @@ $ tmux attach -t session-name       ; 连接会话，远程连接突然中断，
 - 窗口（window）
 
 ```
-Ctrl+A c            ; 新建窗口
-Ctrl+A [0-9]        ; 切换窗口
+Ctrl+a c            ; 新建窗口
+Ctrl+a [0-9]        ; 切换窗口
 ```
 
 - 窗格（pane）
 
 ```
-Ctrl+A -    ; 建立垂直窗格
-Ctrl+A |    ; 建立水平窗格
-Ctrl+A hjkl ; 切换窗格
-Ctrl+A z    ; 最大化窗格
+Ctrl+a -    ; 建立垂直窗格
+Ctrl+a |    ; 建立水平窗格
+Ctrl+a hjkl ; 切换窗格
+Ctrl+a z    ; 最大化窗格
 ```
 
 ## Git
