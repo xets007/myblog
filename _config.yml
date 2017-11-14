@@ -3,12 +3,12 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 星夜前往
+title: Consen
 subtitle:
 description: 对技术保持敬畏之心
 author: Consen 
 avatar: /images/avatar.png
-language: zh-Hans
+language: default
 timezone:
 
 # URL
@@ -95,7 +95,7 @@ deploy:
 #duoshuo_shortname: consen
 
 ## disqus: https://disqus.com/
-disqus_shortname: consen
+#disqus_shortname: consen
 
 ## jiathis: http://www.jiathis.com/
 #jiathis: true
