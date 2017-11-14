@@ -107,6 +107,6 @@ disqus_shortname: consen
 algolia:
   applicationID: 9KGRDNMCOD
   apiKey: 05b35fa0784c0870ed641d7477ec8668
-  adminApiKey: 
+  adminApiKey: dcdcfee57e9e27413718c0fe01f37c85
   indexName: myblog
   chunkSize: 5000
