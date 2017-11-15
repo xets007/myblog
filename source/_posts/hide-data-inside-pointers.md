@@ -18,7 +18,7 @@ categories:
 
 下面是从[evtchn.c](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/drivers/xen/evtchn.c?h=v3.10.20)中抽取的关于port_user的实现：
 
-```
+``` c
 struct per_user_data {
     ...
 };
@@ -77,7 +77,7 @@ C语言中对指针进行位操作是非法的，x64系统中指针占用8字节
 
 其实，在Linux内核中，**红黑树的实现就利用了指针隐藏数据**。红黑树节点的定义为rb_node（[include/linux/rbtree.h](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/include/linux/rbtree.h#n36)）：
 
-```
+``` c
 struct rb_node {
     unsigned long  __rb_parent_color;
     struct rb_node *rb_right;
@@ -89,13 +89,13 @@ struct rb_node {
 
 再看下对父节点指针的访问（[include/linux/rbtree.h](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/include/linux/rbtree.h#n48)）：
 
-```
+``` c
 #define rb_parent(r)   ((struct rb_node *)((r)->__rb_parent_color & ~3))
 ```
 
 对颜色的访问（[include/linux/rbtree_augmented.h](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/include/linux/rbtree_augmented.h#n102)）:
 
-```
+``` c
 #define __rb_color(pc)     ((pc) & 1)
 #define rb_color(rb)       __rb_color((rb)->__rb_parent_color)
 ```
@@ -104,7 +104,7 @@ struct rb_node {
 
 说到内存对齐，前段时间发过一条[微博](http://weibo.com/1996731561/Emg4Ytfty)，只有一行代码：
 
-```
+``` python
 127         contentsz = (length + 7) & ~7
 ```
 

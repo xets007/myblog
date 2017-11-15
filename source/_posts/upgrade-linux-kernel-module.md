@@ -55,7 +55,7 @@ Dec 23 00:51:38 w-xen09 kernel: ---[ end trace b4e323e25997f660 ]---
 
 kernel BUG发生在`drivers/xen/evtchn.c:264`，目前使用的内核版本是kernel-3.10.20，所以得查看kernel-3.10.20中的[evtchn.c](https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/tree/drivers/xen/evtchn.c?h=v3.10.20)代码：
 
-```
+``` c
 256     /*
 257      * Ports are never reused, so every caller should pass in a
 258      * unique port.
@@ -69,7 +69,7 @@ kernel BUG发生在`drivers/xen/evtchn.c:264`，目前使用的内核版本是ke
 
 当`get_port_user(port) != NULL`时，BUG_ON()就打印出了上面的出错信息，包括寄存器和堆栈等信息。再看下`get_port_user()`:
 
-```
+``` c
 72 /*
 73  * Who's bound to each port?  This is logically an array of struct
 74  * per_user_data *, but we encode the current enabled-state in bit 0.
@@ -94,7 +94,7 @@ $ uname -r
 
 最简单的内核模块，[hello world](https://github.com/consen/demo/blob/master/linux/kernel-module/hello-2.6/hello.c):
 
-```
+``` c
 #include <linux/module.h>   /* Needed by all modules */
 #include <linux/kernel.h>   /* Needed for KERN_INFO */
 #include <linux/init.h>     /* Needed for the macros */

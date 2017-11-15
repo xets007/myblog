@@ -19,7 +19,7 @@ Xen官方上周发布了Xen 4.8, [What’s New with Xen Project Hypervisor 4.8?]
 
 ```
 ./configure
-make dist
+make
 ```
 
 编译成功会生成dist文件夹，此文件夹可以直接拷贝到其他设备上，进行安装。
