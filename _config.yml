@@ -87,6 +87,8 @@ deploy:
   type: git
   repo: https://github.com/consen/consen.github.io
   branch: master
+  name: consen
+  email: 1186508815@qq.com
 
 
 # Third Party Services 
