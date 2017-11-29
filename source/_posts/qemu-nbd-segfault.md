@@ -84,9 +84,19 @@ $ objdump -d -M intel qemu-nbd > qemu-nbd.asm
 $ vim -d qemu-nbd.asm qemu-nbd-strip.asm
 ```
 
-![diff](http://7xtc3e.com1.z0.glb.clouddn.com/qemu-nbd-segfault/qemu-nbd-asm.png)
+![qemu-nbd-asm-rbx](http://7xtc3e.com1.z0.glb.clouddn.com/qemu-nbd-segfault/qemu-nbd-asm-rbx.png)
 
-有符号信息对于定位源代码帮助非常大，由汇编代码可以看出问题出在函数`bdrv_co_flush`，执行指令`mov    rax,QWORD PTR [rdx+0x100]`时出错，此时rdx为0，所以segfault日志信息中才有`at 100`。进一步分析汇编代码，确定rbx为函数`bdrv_co_flush`的第一个参数`BlockDriverState *bs`，rdx为`bs->drv`，rdx+0x100为`bs->drv->bdrv_co_flush`。至此可以确定segfault是由于`bs-drv`为NULL造成的，即产生了空指针引用。
+有符号信息对于定位源代码帮助非常大，strip版本函数入口信息都没了，定位出错函数无异于大海捞针。
+
+![qemu-nbd-asm](http://7xtc3e.com1.z0.glb.clouddn.com/qemu-nbd-segfault/qemu-nbd-asm.png)
+
+由汇编代码可以看出问题出在函数`bdrv_co_flush`，执行指令`mov    rax,QWORD PTR [rdx+0x100]`时出错，此时rdx为0，所以segfault日志信息中才有`at 100`。
+
+进一步分析汇编代码，由指令`mov    rbx,rdi`确定rbx为函数`bdrv_co_flush`的第一个参数`BlockDriverState *bs`，根据数据结构[struct BlockDriverState](http://xenbits.xen.org/gitweb/?p=qemu-xen.git;a=blob;f=include/block/block_int.h;h=1e939de4fe5a3b04b418edb4c108e82c3c93a0f8;hb=4220231eb22235e757d269722b9f6a594fbcb70f#l427)及内存对齐（此处按8字节对齐，其中CoQueue为包含两个指针的结构体，所以占16字节），确定`[rbx+0x38]`为`bs->drv`即rdx，同理根据结构体[struct BlockDriver](http://xenbits.xen.org/gitweb/?p=qemu-xen.git;a=blob;f=include/block/block_int.h;h=1e939de4fe5a3b04b418edb4c108e82c3c93a0f8;hb=4220231eb22235e757d269722b9f6a594fbcb70f#l87)可推算出`[rdx+0x100]`为`bs->drv->bdrv_co_flush`。（由于qemu-xen源码一直在更新，分析源码时只能使用当初编译xen时使用的qemu-xen版本）
+
+![qemu-nbd-bs](http://7xtc3e.com1.z0.glb.clouddn.com/qemu-nbd-segfault/qemu-nbd-bs.png)
+
+至此可以确定segfault是由于`bs-drv`为NULL造成的，即产生了空指针引用。函数代码位于[block/io.c](http://xenbits.xen.org/gitweb/?p=qemu-xen.git;a=blob;f=block/io.c;h=420944d80db104188445e198ce45eb890fc6edfb;hb=4220231eb22235e757d269722b9f6a594fbcb70f#l2293) 2293行。
 
 ``` c
 2292     /* Write back all layers by calling one driver function */
@@ -96,14 +106,6 @@ $ vim -d qemu-nbd.asm qemu-nbd-strip.asm
 2296     }
 ```
 
-关键函数及数据结构：
-
-- [bdrv_co_flush()](http://xenbits.xen.org/gitweb/?p=qemu-xen.git;a=blob;f=block/io.c;h=420944d80db104188445e198ce45eb890fc6edfb;hb=4220231eb22235e757d269722b9f6a594fbcb70f#l2292)
-- [struct BlockDriverState](http://xenbits.xen.org/gitweb/?p=qemu-xen.git;a=blob;f=include/block/block_int.h;h=1e939de4fe5a3b04b418edb4c108e82c3c93a0f8;hb=4220231eb22235e757d269722b9f6a594fbcb70f#l427)
-- [struct BlockDriver](http://xenbits.xen.org/gitweb/?p=qemu-xen.git;a=blob;f=include/block/block_int.h;h=1e939de4fe5a3b04b418edb4c108e82c3c93a0f8;hb=4220231eb22235e757d269722b9f6a594fbcb70f#l87)
-
-根据数据结构及内存对齐，确定`[rbx+0x38]`为`bs->drv`即rdx，`[rdx+0x100]`为`bs->drv->bdrv_co_flush`。
-
-确定了引起segfault的具体代码，问题就很好解决了。其时qemu主分支对此问题已经有一定修复，[block: Guard against NULL bs->drv](https://git.qemu.org/?p=qemu.git;a=commitdiff;h=d470ad42acfc73c45d3e8ed5311a491160b4c100;hp=93bbaf03ff7fd490e823814b8f5d6849a7b71a64)。
+确定了引起segfault的具体代码，问题就很好解决了。其时qemu主分支就在最近对此问题已经有一定修复，[block: Guard against NULL bs->drv](https://git.qemu.org/?p=qemu.git;a=commitdiff;h=d470ad42acfc73c45d3e8ed5311a491160b4c100;hp=93bbaf03ff7fd490e823814b8f5d6849a7b71a64)。
 
 如果能进一步深入分析引起`bs->drv`为空指针的原因，并能手动复现，找出攻击路径，即可发起DOS(拒绝服务)攻击。
