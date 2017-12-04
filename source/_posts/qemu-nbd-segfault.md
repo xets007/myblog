@@ -9,9 +9,14 @@ tags:
 
 segfault段错误是软件开发中经常会遇到的错误，该错误是由非法内存访问造成的，如空指针引用；在只读内存区域进行写操作；访问受保护的内存区域等。在不同场景下，segfault的解决难度大不相同，比如有源代码并且segfault很容易复现，重新编译一个调试版可执行文件，用gdb调试马上就能定位问题。但是如果segfault很难复现，或者没有调式版可用呢？又如何去定位问题呢？
 
-最近就在线上环境遇到一个qemu-ndb造成的segfault错误，影响很严重。qemu-nbd要用到nbd内核模块，segfault错误出现时，qemu-nbd相关进程卡主无响应，造成业务无法正常运行，甚至强制kill掉qemu-nbd进程时，kill进程也会卡主，只能断电重启服务器使业务临时恢复正常运行。必须从根本上解决该问题，才能避免一些不必要的麻烦。
+最近就在线上环境遇到一个qemu-ndb造成的segfault错误，影响很严重。qemu-nbd要用到nbd内核模块，segfault错误出现时，qemu-nbd相关进程卡主无响应，造成业务无法正常运行，甚至无法强制kill掉qemu-nbd进程，只能断电重启服务器使业务临时恢复正常运行。根据现象判断，qemu-nbd进程处于uninterruptible sleep状态，通过ps命令可以看出qemu-nbd进程的状态为D(uninterruptible sleep)。相较于interruptible sleep状态，uninterruptible sleep状态下的进程对信号没有响应，无法对它发送SIGKILL信号，也就无法kill掉，只能重启服务器。该状态出现一般是IO出了问题，必须从根本上解决该问题，才能避免一些不必要的麻烦。
 
 <!-- more -->
+
+```
+$ ps aux | grep nbd
+root     13647  0.0  0.0 295388  7344 ?        Dsl  Nov23   0:00 /usr/local/lib/xen/bin/qemu-nbd -c /dev/nbd10 /tmp/vm.img
+```
 
 在这种场景下，遇到了以下几个难点：
 
@@ -78,9 +83,11 @@ $ objdump -d -M intel qemu-nbd > qemu-nbd.asm
 
 由于线上运行的qemu-nbd的符号信息被strip掉了（为了使发布的可执行文件尽可能小，并增加逆向难度，一般会将符号信息剔除掉），所以从反汇编代码中很难确定0x761c7指令地址到底对应的是源代码的哪一行。
 
-不过万幸的是，当初编译xen时的编译环境还在，没有strip掉符号信息的qemu-nbd版本还在，位于`tools/qemu-xen-dir/qemu-nbd`，strip版本位于`dist/install/usr/local/lib/xen/bin/qemu-nbd`。现在对比下非strip和strip版本的反汇编代码：
+不过万幸的是，当初编译xen时的编译环境还在，没有strip掉符号信息的qemu-nbd版本还在，位于`tools/qemu-xen-dir/qemu-nbd`，strip版本位于`dist/install/usr/local/lib/xen/bin/qemu-nbd` (线上环境的qemu-nbd就是使用的该二进制文件)。现在对比下非strip和strip版本的反汇编代码：
 
 ```
+$ objdump -d -M intel tools/qemu-xen-dir/qemu-nbd > qemu-nbd.asm
+$ objdump -d -M intel dist/install/usr/local/lib/xen/bin/qemu-nbd > qemu-nbd-strip.asm
 $ vim -d qemu-nbd.asm qemu-nbd-strip.asm
 ```
 
