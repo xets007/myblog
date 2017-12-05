@@ -83,7 +83,7 @@ $ objdump -d -M intel qemu-nbd > qemu-nbd.asm
 
 由于线上运行的qemu-nbd的符号信息被strip掉了（为了使发布的可执行文件尽可能小，并增加逆向难度，一般会将符号信息剔除掉），所以从反汇编代码中很难确定0x761c7指令地址到底对应的是源代码的哪一行。
 
-不过万幸的是，当初编译xen时的编译环境还在，没有strip掉符号信息的qemu-nbd版本还在，位于`tools/qemu-xen-dir/qemu-nbd`，strip版本位于`dist/install/usr/local/lib/xen/bin/qemu-nbd` (线上环境的qemu-nbd就是使用的该二进制文件)。现在对比下非strip和strip版本的反汇编代码：
+不过万幸的是，当初编译xen时的编译环境还在（如果编译环境发生了改变，就只能重新编译，替换线上运行的qemu-nbd，等待问题复现），没有strip掉符号信息的qemu-nbd版本还在，位于`tools/qemu-xen-dir/qemu-nbd`，strip版本位于`dist/install/usr/local/lib/xen/bin/qemu-nbd` (线上环境的qemu-nbd就是使用的该二进制文件)。现在对比下非strip和strip版本的反汇编代码：
 
 ```
 $ objdump -d -M intel tools/qemu-xen-dir/qemu-nbd > qemu-nbd.asm
