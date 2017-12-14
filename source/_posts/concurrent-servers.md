@@ -13,7 +13,7 @@ categories: Linux
 
 # A sequential server
 
-串行服务，一次只能处理一个客户端请求，其他客户端只能等待，所以效率很低，这也促使引入更高效的并发模型。
+串行服务，一次只能处理一个客户端请求，其他客户端只能等待，所以效率很低，这也促使引入更高效的并发模型。(我之前的一篇博客[网络连接为什么超时了](https://consen.github.io/2016/09/20/a-network-timeout-bug/)就跟串行服务有关)
 
 ![](http://7xtc3e.com1.z0.glb.clouddn.com/concurrent-servers/sequential-flow.png)
 
