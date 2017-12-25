@@ -5,7 +5,7 @@ tags: Concurrency
 categories: Linux
 ---
 
-最近拜读了Eli Bendersky写的[Concurrent Servers](https://eli.thegreenplace.net/2017/concurrent-servers-part-1-introduction/)系列博客，学到了很多，明确了跟并发相关的概念，以及并发的应用场景，在此对相关重点做一总结。
+最近拜读了Eli Bendersky写的[Concurrent Servers](https://eli.thegreenplace.net/2017/concurrent-servers-part-1-introduction/)系列博客，作者由简单到复杂，由串行到并行，由多线程到事件驱动，再到第三方库对并发的实现，梳理了并发服务相关思想，在此对相关重点做一总结。
 
 作者写就此文的目的是检验几种流行的并发模型，评判这些模型的伸缩性(scalability)和是否容易实现。作者自定义了一种简单的协议(protocol)，用于服务端与客户端交互，协议是有状态的(stateful)，服务端根据客户端发送的数据更改状态，并根据状态产生不同行为。
 
