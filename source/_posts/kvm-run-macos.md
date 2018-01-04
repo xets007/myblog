@@ -25,7 +25,7 @@ tags:
 
 <!-- more -->
 
-# 准备工作
+## 准备工作
 
 运行KVM需要CPU支持虚拟化扩展，即Intel VT-x或AMD SVM，如果功能没开启，需要在BISO开启。运行OSX需要KVM和QEMU支持，对KVM和QEMU的修改都已合并到主分支代码，如果系统自带的KVM或QEMU版本太老，OSX是无法正常运行的，至少需要Linux kernel >= 4.7，QEMU >= 2.6。
 
@@ -54,7 +54,7 @@ QEMU emulator version 2.11.0
 Copyright (c) 2003-2017 Fabrice Bellard and the QEMU Project developers
 ```
 
-# 安装macOS
+## 安装macOS
 
 接着按照[OSX-KVM](https://github.com/kholia/OSX-KVM)系统安装文档，安装macOS系统。我直接使用的`qemu-system-x86_64`，没有借助`libvirt`。
 
@@ -81,7 +81,7 @@ qemu-system-x86_64 -enable-kvm -m 2048 -cpu Penryn,kvm=off,vendor=GenuineIntel \
 
 ![macos_sierra](http://7xtc3e.com1.z0.glb.clouddn.com/kvm-run-macos/macos_10.12.jpg)
 
-# 网络配置
+## 网络配置
 
 虚拟机可正常运行后，接下来最重要的工作是网络配置，使虚拟机可正常连接网络。
 
@@ -89,7 +89,7 @@ qemu-system-x86_64 -enable-kvm -m 2048 -cpu Penryn,kvm=off,vendor=GenuineIntel \
 
 ![network](http://7xtc3e.com1.z0.glb.clouddn.com/kvm-run-macos/macos-network.jpg)
 
-## 网桥virbr0创建
+### 网桥virbr0创建
 
 创建持久网桥，这样主机重启后就不必重新配置：
 
@@ -103,7 +103,7 @@ NETMASK=255.255.255.0
 ONBOOT=yes
 ```
 
-## iptables SNAT
+### iptables SNAT
 
 配置`/etc/sysconfig/iptables`添加NAT规则:
 
@@ -117,11 +117,11 @@ ONBOOT=yes
 net.ipv4.ip_forward = 1
 ```
 
-## dnsmasq
+### dnsmasq
 
 配置dnsmasq，给虚拟机提供DHCP和DNS服务。
 
-## 虚拟机网卡配置
+### 虚拟机网卡配置
 
 将之前虚拟机启动脚本中的网卡配置，改成：
 

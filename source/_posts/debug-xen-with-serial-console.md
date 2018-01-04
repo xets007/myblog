@@ -20,7 +20,7 @@ Xen hypervisor的运行信息写到了内存中，可以通过`xl dmesg`命令�
 
 <!-- more -->
 
-# 串口线选择
+## 串口线选择
 
 串口线注意选择交叉线而不是直连线，一端用于发送，一端用于接收。
 
@@ -30,7 +30,7 @@ Xen hypervisor的运行信息写到了内存中，可以通过`xl dmesg`命令�
 
 ![serial_cable](http://7xtc3e.com1.z0.glb.clouddn.com/debug-xen-with-serial-console/seriale_cable.jpg)
 
-# 串口连通性测试
+## 串口连通性测试
 
 在对Xen进行串口配置之前，可以先测试下串口连通性。
 
@@ -49,13 +49,13 @@ serial8250: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
 
 配好后，输入任意字符，如果在另一台设备的`minicom`中能看到对应的输出，说明串口连接正常。
 
-# Xen串口配置
+## Xen串口配置
 
 在运行Xen的设备上，配置Grub开机启动项，Xen参数添加`loglvl=all guest_loglvl=all console=com2 com2=115200,8n1`，Dom0内核参数添加`console=hvc0`。
 
 如果不想在串口中错过每一条信息，可在Xen参数添加`sync_console`，强制同步串口输出，当然这只适用于调试，因为需要将所有信息从串口输出，严重影响hypervisor性能，虚拟机会特别卡。
 
-# 串口调试Xen
+## 串口调试Xen
 
 Xen设备配置好后，在另一台设备上运行`minicom -s -C xen.log`，（`-C xen.log`将串口输出同时保存在xen.log文件，方便后续查看）,重启Xen设备。
 
