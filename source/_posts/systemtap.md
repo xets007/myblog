@@ -8,7 +8,7 @@ tags:
 ---
 
 
-[SystemTap](https://sourceware.org/systemtap/wiki)是一款Linux跟踪探测（trace/probe）工具，可收集Linux运行信息，用于性能诊断和问题排查等。SystemTap不需要每次都修改、编译、安装、重启等繁杂冗余的操作，通过其自定义的脚本语言，即可编写功能丰富强大的探测模块，动态载入内核，对系统进行监控，获取指定信息。
+[SystemTap](https://sourceware.org/systemtap/wiki)是一款Linux跟踪探测（trace/probe）工具，可收集Linux运行信息，用于性能诊断和问题排查等。SystemTap不需要每次都对内核修改、编译、安装、重启等繁杂冗余的操作，通过其自定义的脚本语言，即可编写功能丰富强大的探测模块，动态载入内核，对系统进行监控，获取指定信息。
 
 SystemTap可以监控系统调用、内核函数及其他发生在内核的事件（event），当事件触发时，运行指定处理例程（handler）。
 
