@@ -172,6 +172,8 @@ $ sudo stap -v -m sshd_profile.ko -p4 sshd_profile.stp
 $ sudo staprun sshd_profile.ko
 ```
 
+SystemTap在沙箱中的应用参见下一篇博客[Cuckoo沙箱Linux检测引擎](https://consen.github.io/2018/01/05/cuckoo-sandbox-linux-analyzer/)
+
 参考：
 
 * [Systemtap tutorial](https://sourceware.org/systemtap/tutorial.pdf)
