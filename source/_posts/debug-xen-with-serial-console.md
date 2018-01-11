@@ -101,3 +101,4 @@ Xen设备启动成功后，在串口上看到是Dom0，按6次`Ctrl-a`进入Xen�
 * [Xen Hypervisor Command Line Options](https://xenbits.xen.org/docs/unstable/misc/xen-command-line.html)
 * [Crossover or "Null Modem" vs. Straight Through Serial Cable](https://www.decisivetactics.com/support/view?article=crossover-or-null-modem-vs-straight-through-serial-cable)
 * [8-N-1](https://en.wikipedia.org/wiki/8-N-1)
+* [Linux Serial Console](https://www.kernel.org/doc/html/latest/admin-guide/serial-console.html)
