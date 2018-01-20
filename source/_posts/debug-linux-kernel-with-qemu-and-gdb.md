@@ -111,7 +111,7 @@ $ qemu-system-x86_64 -s -kernel /path/to/vmlinux -initrd initramfs.cpio.gz -nogr
 - `-nographic`取消图形输出窗口，使QEMU成简单的命令行程序；
 - `-append "console=ttyS0"`将输出重定向到console，将会显示在标准输出stdio。
 
-启动后的根目录：
+启动后的根目录, 就是initramfs中包含的内容：
 
 ```
 / # ls                    
@@ -198,7 +198,7 @@ $2 = 0xffff880007e68980 "console=ttyS0"
 
 ![](http://7xtc3e.com1.z0.glb.clouddn.com/debug-linux-kernel-with-qemu-and-gdb/process.jpg)
 
-Linux把跟一个进程相关的`thread_info`和内核栈stack放在了同一内存区域，内核通过esp寄存器获得当前CPU上运行的进程的`thread_info`地址，由于进程描述符task字段在`thread_info`结构体中偏移量为0，进而获得task地址。相关汇编指令如下：
+Linux把跟一个进程相关的`thread_info`和内核栈stack放在了同一内存区域，内核通过esp寄存器获得当前CPU上运行进程的内核栈栈底地址，该地址正好是`thread_info`地址，由于进程描述符指针task字段在`thread_info`结构体中偏移量为0，进而获得task。相关汇编指令如下：
 
 ```
 movl $0xffffe000, %ecx      /* 内核栈大小为8K，屏蔽低13位有效位。
@@ -227,7 +227,6 @@ $50 = 77
 (gdb) p $lx_per_cpu("current_task").pid
 $52 = 77
 ```
-
 
 参考：
 
