@@ -212,6 +212,8 @@ Result: 250 2.0.0 OK 1516281059 v9sm14814354pfj.88 - gsmtp
 
 维护人员确认无误后，会将Patch提交到mm-tree，[scripts-gdb-fix-get_thread_info.patch added to -mm tree](https://www.spinics.net/lists/stable/msg210845.html)，再提交到stable分支，[[patch 4/6] scripts/gdb/linux/tasks.py: fix get_thread_info](https://www.spinics.net/lists/stable/msg210851.html)。
 
+**最终会被Linus Torvalds合并到主分支，[scripts/gdb/linux/tasks.py: fix get_thread_info](https://github.com/torvalds/linux/commit/883d50f56d263f70fd73c0d96b09eb36c34e9305)。**
+
 看到自己的代码在世界的某个角落运转，推动世界向前发展，才是真正的享受。
 
 参考：
