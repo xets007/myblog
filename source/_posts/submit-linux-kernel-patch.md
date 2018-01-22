@@ -210,9 +210,9 @@ Result: 250 2.0.0 OK 1516281059 v9sm14814354pfj.88 - gsmtp
 
 提交成功后，就能在内核邮件列表中看到自己的邮件[[PATCH] scripts/gdb: fix get_thread_info](https://lkml.org/lkml/2018/1/18/291)，以及维护人员的回复[Re: [PATCH] scripts/gdb: fix get_thread_info](https://lkml.org/lkml/2018/1/18/516)。
 
-维护人员确认无误后，会将Patch提交到mm-tree，[scripts-gdb-fix-get_thread_info.patch added to -mm tree](https://www.spinics.net/lists/stable/msg210845.html)，再提交到stable分支，[[patch 4/6] scripts/gdb/linux/tasks.py: fix get_thread_info](https://www.spinics.net/lists/stable/msg210851.html)。
+Linux内核被划分成不同的子系统，如网络、内存管理等，不同的子系统有相应的维护人员，一个Patch会首先提交到子系统分支，再被维护人员提交到主分支。我的Patch被提交到了mm-tree（维护人员是Andrew Morton），见mm-commits邮件列表[scripts-gdb-fix-get_thread_info.patch added to -mm tree](https://marc.info/?l=linux-mm-commits&m=151631227209235)，Andrew Morton确认没问题后，会将Patch发送给Linus Torvalds，见mm-commits[[patch 4/6] scripts/gdb/linux/tasks.py: fix get_thread_info](https://marc.info/?l=linux-mm-commits&m=151632204511765)，我的Patch还被发送给了stable分支，见stable邮件列表[[patch 4/6] scripts/gdb/linux/tasks.py: fix get_thread_info](https://www.spinics.net/lists/stable/msg210851.html)。
 
-**最终会被Linus Torvalds合并到主分支，[scripts/gdb/linux/tasks.py: fix get_thread_info](https://github.com/torvalds/linux/commit/883d50f56d263f70fd73c0d96b09eb36c34e9305)。**
+**最终由Linus Torvalds将Patch合并到主分支，[scripts/gdb/linux/tasks.py: fix get_thread_info](https://github.com/torvalds/linux/commit/883d50f56d263f70fd73c0d96b09eb36c34e9305)。**
 
 看到自己的代码在世界的某个角落运转，推动世界向前发展，才是真正的享受。
 
