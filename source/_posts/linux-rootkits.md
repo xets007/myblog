@@ -15,7 +15,7 @@ Rootkits的实现手段多种多样，从应用层到动态链接库层，再到
 
 ![linux kernel attacks](http://7xtc3e.com1.z0.glb.clouddn.com/linux-rootkits/kernel-attacks.png)
 
-从上图可以看出，进程执行流程中的每一步都有可能可能被利用来控制执行行为，本篇博客重点关注内核层。
+从上图可以看出，进程执行流程中的每一步都有可能被利用来控制执行行为，本篇博客重点关注内核层。
 
 内核层最简单的Hook方式是直接将系统调用替换：
 
@@ -24,7 +24,7 @@ saved_syscall = sys_call_table[SYSCALL_NUMBER];
 sys_call_table[SYSCALL_NUMBER] = new_syscall;
 ```
 
-在内核2.6版本之前，`sys_call_table`是导出符号，可直接引用，在新版内核，该符号不再导出，要替换系统调用，得先找到`sys_call_table`符号地址，方法有很多，如在System.map符号文件中查找；在/proc/kallsyms中查找；在内存中暴力搜索导出的系统调用如`sys_close`，`sctable[__NR_close] == (unsigned *) sys_close`，`sctable`即`sys_call_table`地址；在系统调用入口处`entry_SYSCALL_64`搜索`call`指令`ff 14 c5`，其操作数即`sys_call_table`地址。另外还要解决的一个问题是内存写保护，通过清理`CR0`寄存器的写保护位，使只读页可写，进而可更改`sys_call_table`。
+在内核2.6版本之前，`sys_call_table`是导出符号，可直接引用，在新版内核，该符号不再导出，要替换系统调用，得先找到`sys_call_table`符号地址，方法有很多，如在System.map符号文件中查找；在/proc/kallsyms中查找；在内存中暴力搜索导出的系统调用如`sys_close`，如果`sctable[__NR_close] == (unsigned *) sys_close`，则`sctable`即`sys_call_table`地址；在系统调用入口处`entry_SYSCALL_64`搜索`call`指令`ff 14 c5`，其操作数即`sys_call_table`地址。另外还要解决的一个问题是内存写保护，通过清零`CR0`寄存器的写保护位，使只读页可写，进而可更改`sys_call_table`。
 
 另外一种Hook技术Inline Hooking，不但可以Hook系统调用，还可Hook内核函数，该方法直接修改目标函数指令，跳转到自定义函数。这种技术也是Rootkits [Suterusu](https://github.com/consen/suterusu)用到的Hook技术，Suterusu的Hook框架相当优美，很值得学习。
 
@@ -142,7 +142,7 @@ Used options:
 Found HIDDEN PID: 2011
 ```
 
-unhide通过暴力枚举`/proc`下进程，检测隐藏进程。
+unhide暴力枚举`/proc`下进程(1~32768)，如果进程PID目录存在但是对ps命令不可见，则认为该进程被隐藏。
 
 - **检测隐藏端口**
 
@@ -155,7 +155,7 @@ Found Hidden port that not appears in ss: 8000
 [*]Starting UDP checking
 ```
 
-unhide-tcp通过暴力枚举连接端口，检测隐藏端口。
+unhide-tcp暴力枚举端口(1~65535)，如果端口正在使用但是对netstat命令不可见，则认为该端口被隐藏。
 
 参考：
 
